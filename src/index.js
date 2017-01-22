@@ -12,7 +12,7 @@ function queryNextbus(all, callback) {
       //http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=unitrans&r=O&s=22175
         host: 'webservices.nextbus.com',
         //path: '/service/publicXMLFeed?command=predictions&a=unitrans&r=O&s=22175',
-        path: '/service/publicXMLFeed?command=predictions&a=sf-muni&stopId=15651',
+        path: '/service/publicXMLFeed?command=predictions&a=unitrans&stopId=188',
         method: 'GET'
     };
 
@@ -121,6 +121,11 @@ var handlers = {
                 var route = bus.route.replace("_OWL", " Owl");
                 speechOutput += route + ' bus in ' + bus.minutes + (bus.minutes == 1 ? ' minute, ' : ' minutes, ');
             }
+
+            if speechOutput == '' {
+                speechOutput = "I\'m sorry, there don't seem to be any arrivals at all at the moment."
+            }
+
             self.attributes['speechOutput'] = speechOutput;
             self.emit(':tell', speechOutput);
         });
