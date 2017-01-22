@@ -27,7 +27,11 @@ function queryNextbus(all, callback) {
         res.on('end', function () {
             parseString(body, function (err, result) {
                 //console.log(util.inspect(result, false, null));
-                let departures = result.body.predictions.map(function(prediction) {
+                let departures = result.body.predictions;
+                departures = departures.filter(function(prediction) {
+                    return prediction != null;
+                });
+                departures = departures.map(function(prediction) {
                 //for (let prediction of result.body.predictions) {
                     let route = prediction['$'].routeTag // or tag
                     console.log('route: ' + route);
