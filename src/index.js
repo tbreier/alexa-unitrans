@@ -124,11 +124,13 @@ var handlers = {
         if (itemSlot && itemSlot.value) {
             itemName = itemSlot.value;
 		}
-			
+
         var self = this;
 
         queryNextbus(false, function(departures) {
-            var recipe = departures[itemName];
+            var recipe = departures.find(function(line) {
+                return line.route == itemName;
+            });
 
             if (recipe) {
                 self.attributes['speechOutput'] = recipe.minutes.join(); //says the recipe
