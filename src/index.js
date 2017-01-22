@@ -118,7 +118,8 @@ var handlers = {
 		queryNextbus(true, function(departures) {
             var speechOutput = '';
             for(let bus of departures) {
-                speechOutput += bus.route + ' bus in ' + bus.minutes + (bus.minutes == 1 ? ' minute' : ' minutes');
+                var route = bus.route.replace("_OWL", " Owl");
+                speechOutput += route + ' bus in ' + bus.minutes + (bus.minutes == 1 ? ' minute, ' : ' minutes, ');
             }
             self.attributes['speechOutput'] = speechOutput;
             self.emit(':tell', speechOutput);
