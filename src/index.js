@@ -29,7 +29,7 @@ function queryNextbus(all, callback) {
                 //console.log(util.inspect(result, false, null));
                 let departures = result.body.predictions;
                 departures = departures.filter(function(prediction) {
-                    return prediction == undefined;
+                    return prediction.direction != undefined;
                 });
                 departures = departures.map(function(prediction) {
                 //for (let prediction of result.body.predictions) {
