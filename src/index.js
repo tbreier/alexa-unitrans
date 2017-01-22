@@ -12,7 +12,7 @@ function queryNextbus(all, callback) {
       //http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=unitrans&r=O&s=22175
         host: 'webservices.nextbus.com',
         //path: '/service/publicXMLFeed?command=predictions&a=unitrans&r=O&s=22175',
-        path: '/service/publicXMLFeed?command=predictions&a=sf-muni&stopId=16997',
+        path: '/service/publicXMLFeed?command=predictions&a=sf-muni&stopId=15651',
         method: 'GET'
     };
 
