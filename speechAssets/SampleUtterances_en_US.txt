@@ -7,9 +7,11 @@ RecipeIntent {Item} bus
 RecipeIntent When is the {Item}
 RecipeIntent when is the {Item} bus
 RecipeIntent when is bus {Item}
+RecipeIntent when is the {Item} bus coming
+RecipeIntent when is the {Item} line coming
 
 AllIntent All lines
 AllIntent All busses
 AllIntent list all
 AllIntent show all
-AllIntent all departures
+AllIntent all arrivals
