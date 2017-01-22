@@ -122,8 +122,8 @@ var handlers = {
                 speechOutput += route + ' bus in ' + bus.minutes + (bus.minutes == 1 ? ' minute, ' : ' minutes, ');
             }
 
-            if speechOutput == '' {
-                speechOutput = "I\'m sorry, there don't seem to be any arrivals at all at the moment."
+            if(speechOutput == '') {
+                speechOutput = "I\'m sorry, there don't seem to be any arrivals at all at the moment.";
             }
 
             self.attributes['speechOutput'] = speechOutput;
