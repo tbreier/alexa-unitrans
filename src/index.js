@@ -4,6 +4,90 @@ var Alexa = require('alexa-sdk');
 var APP_ID = undefined; // TODO replace with your app ID (OPTIONAL).
 var recipes = require('./recipes');
 
+function queryNextbus(all, callback) {
+
+    var options = {
+      //http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=unitrans&r=O&s=22175
+        host: 'webservices.nextbus.com',
+        //path: '/service/publicXMLFeed?command=predictions&a=unitrans&r=O&s=22175',
+        path: '/service/publicXMLFeed?command=predictions&a=sf-muni&stopId=16997',
+        method: 'GET'
+    };
+
+    var req = http.request(options, (res) => {
+
+        var body = '';
+
+        res.on('data', (d) => {
+            body += d;
+        });
+
+        res.on('end', function () {
+            parseString(body, function (err, result) {
+                //console.log(util.inspect(result, false, null));
+                let departures = result.body.predictions.map(function(prediction) {
+                //for (let prediction of result.body.predictions) {
+                    let route = prediction['$'].routeTag // or tag
+                    console.log('route: ' + route);
+
+                    let minMinutes = 1440;
+                    let minDirection = '';
+
+                    let minutes = prediction.direction.map(function(direction) {
+                        let currentDirection = direction['$'].title;
+
+                        console.log('direction: ' + currentDirection);
+                        return direction.prediction.map(function(prediction) {
+                            let currentMinutes = prediction['$'].minutes;
+                            console.log(currentMinutes);
+                            return Number(currentMinutes);
+                            //if (currentMinutes < minMinutes) {
+                            //    minMinutes = currentMinutes;
+                            //    minDirection = currentDirection;
+                            //}
+                        });
+                    });
+
+                    minutes = [].concat.apply([], minutes);
+                    minutes.sort(function(a,b) {
+                        return a - b;
+                    });
+
+                    //console.log(minDirection + ' in ' + minMinutes);
+                    return {route: route, minutes: minutes};
+                });
+
+                console.log(departures);//.sort(function(a, b) {return a.minutes - b.minutes}));
+
+                if (!all) {
+                    callback(departures);
+                    return
+                }
+                // ----
+
+                departures = departures.map(function(line) {
+                    return line.minutes.map(function(minute) {
+                        return {route: line.route, minutes: minute};
+                    });
+                });
+                departures = [].concat.apply([], departures);
+                departures.sort(function(a,b) {
+                  return a.minutes - b.minutes;
+                });
+
+                console.log(departures);
+                callback(departures);
+            });
+        });
+
+    });
+    req.end();
+
+    req.on('error', (e) => {
+        console.error(e);
+    });
+}
+
 exports.handler = function(event, context, callback) {
     var alexa = Alexa.handler(event, context);
     alexa.APP_ID = APP_ID;
@@ -33,37 +117,34 @@ var handlers = {
         var itemName; //
         if (itemSlot && itemSlot.value) {
             itemName = itemSlot.value;
-			}
+		}
 			
-		var result = {'A': 10, 'B': 15};
-		
-		
+        var self = this;
 
-        //var cardTitle = this.t("DISPLAY_CARD_TITLE", this.t("SKILL_NAME"), itemName);
-        //var recipes = this.t("RECIPES");
-        var recipe = result[itemName];
-		
-		
+        queryNextbus(false, function(departures) {
+            var recipe = departures[itemName];
 
-        if (recipe) {
-            this.attributes['speechOutput'] = recipe; //says the recipe
-            //this.attributes['repromptSpeech'] = this.t("RECIPE_REPEAT_MESSAGE");
-            this.emit(':tell',"Your bus will be arriving in" + recipe + "minutes");
-        } else {
-            var speechOutput = this.t("RECIPE_NOT_FOUND_MESSAGE");
-            var repromptSpeech = this.t("RECIPE_NOT_FOUND_REPROMPT");
-            if (itemName) {
-                speechOutput += this.t("RECIPE_NOT_FOUND_WITH_ITEM_NAME", itemName);
+            if (recipe) {
+                self.attributes['speechOutput'] = recipe.minutes.join(); //says the recipe
+                //this.attributes['repromptSpeech'] = this.t("RECIPE_REPEAT_MESSAGE");
+                self.emit(':tell',"Your bus will be arriving in" + recipe + "minutes");
             } else {
-                speechOutput += this.t("RECIPE_NOT_FOUND_WITHOUT_ITEM_NAME");
+                var speechOutput = self.t("RECIPE_NOT_FOUND_MESSAGE");
+                var repromptSpeech = self.t("RECIPE_NOT_FOUND_REPROMPT");
+                if (itemName) {
+                    speechOutput += self.t("RECIPE_NOT_FOUND_WITH_ITEM_NAME", itemName);
+                } else {
+                    speechOutput += self.t("RECIPE_NOT_FOUND_WITHOUT_ITEM_NAME");
+                }
+                speechOutput += repromptSpeech;
+
+                self.attributes['speechOutput'] = speechOutput;
+                self.attributes['repromptSpeech'] = repromptSpeech;
+
+                self.emit(':ask', speechOutput, repromptSpeech);
             }
-            speechOutput += repromptSpeech;
+        });
 
-            this.attributes['speechOutput'] = speechOutput;
-            this.attributes['repromptSpeech'] = repromptSpeech;
-
-            this.emit(':ask', speechOutput, repromptSpeech);
-        }
     },
     'AMAZON.HelpIntent': function () {
         this.attributes['speechOutput'] = this.t("HELP_MESSAGE");
