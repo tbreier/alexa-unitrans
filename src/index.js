@@ -135,7 +135,7 @@ var handlers = {
         var itemSlot = this.event.request.intent.slots.Item;
         var itemName; //
         if (itemSlot && itemSlot.value) {
-            itemName = itemSlot.value.toLowerCase();
+            itemName = itemSlot.value.toLowerCase()[0];
 		}
 
         var self = this;
