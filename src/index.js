@@ -133,9 +133,11 @@ var handlers = {
             });
 
             if (recipe) {
-                self.attributes['speechOutput'] = recipe.minutes.join(); //says the recipe
+                var minutes = recipe.minutes;
+                [minutes.slice(0, -1).join(', '), minutes.slice(-1)[0]].join(minutes.length < 2 ? '' : ' and ');
+                self.attributes['speechOutput'] = minutes; //says the recipe
                 //this.attributes['repromptSpeech'] = this.t("RECIPE_REPEAT_MESSAGE");
-                self.emit(':tell',"Your bus will be arriving in" + recipe + "minutes");
+                self.emit(':tell',"Your bus will be arriving in" + minutes + "minutes");
             } else {
                 var speechOutput = self.t("RECIPE_NOT_FOUND_MESSAGE");
                 var repromptSpeech = self.t("RECIPE_NOT_FOUND_REPROMPT");
