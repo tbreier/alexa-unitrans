@@ -134,7 +134,7 @@ var handlers = {
 
             if (recipe) {
                 var minutes = recipe.minutes;
-                [minutes.slice(0, -1).join(', '), minutes.slice(-1)[0]].join(minutes.length < 2 ? '' : ' and ');
+                [minutes.slice(0, -1).join(' '), minutes.slice(-1)[0]].join(minutes.length < 2 ? '' : ' and ');
                 self.attributes['speechOutput'] = minutes; //says the recipe
                 //this.attributes['repromptSpeech'] = this.t("RECIPE_REPEAT_MESSAGE");
                 self.emit(':tell',"Your bus will be arriving in" + minutes + "minutes");
