@@ -122,7 +122,7 @@ var handlers = {
             }
             self.attributes['speechOutput'] = speechOutput;
             self.emit(':tell', speechOutput);
-        }
+        });
 	},
 	
     'RecipeIntent': function () {
