@@ -1,0 +1,15 @@
+RecipeIntent when is the {Item} line 
+RecipeIntent {Item}
+RecipeIntent {Item} line
+RecipeIntent line {Item}
+RecipeIntent bus {Item}
+RecipeIntent {Item} bus
+RecipeIntent When is the {Item}
+RecipeIntent when is the {Item} bus
+RecipeIntent when is bus {Item}
+
+AllIntent All lines
+AllIntent All busses
+AllIntent list all
+AllIntent show all
+AllIntent all departures
