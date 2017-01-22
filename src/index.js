@@ -116,7 +116,7 @@ var handlers = {
 	'AllIntent': function () {
         var self = this;
 		queryNextbus(true, function(departures) {
-            var speechOutput = ''
+            var speechOutput = '';
             for(let bus of departures) {
                 speechOutput += bus.route + ' bus in ' + bus.minutes + (bus.minutes == 1 ? ' minute' : ' minutes');
             }
@@ -145,7 +145,7 @@ var handlers = {
 
                 self.attributes['speechOutput'] = minutes; //says the recipe
                 //this.attributes['repromptSpeech'] = this.t("RECIPE_REPEAT_MESSAGE");
-                self.emit(':tell', recipe.route + " bus arriving in " + minutes + (minutes.length == 1 && minutes[0] == 1 ? : ' minute' : " minutes"));
+                self.emit(':tell', recipe.route + " bus arriving in " + minutes + (minutes.length == 1 && minutes[0] == 1 ? ' minute' : " minutes"));
             } else {
                 var speechOutput = self.t("RECIPE_NOT_FOUND_MESSAGE");
                 var repromptSpeech = self.t("RECIPE_NOT_FOUND_REPROMPT");
